@@ -18,11 +18,26 @@
 //                       `=---='
 //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const server = require('./src/app.js');
-const { conn } = require('./src/db.js');
+const { conn } = require('./src/db');
+const axios = require('axios');
+const Temper = require('./src/models/Temper.js');
 
 // Syncing all the models at once.
-conn.sync({ force: true }).then(() => {
-  server.listen(3001, () => {
-    console.log('%s listening at 3001'); // eslint-disable-line no-console
+conn.sync({ force: false }).then(() => {
+
+  server.listen(3002, () => {
+    // async function getTemper() {
+    //   let result = await axios.get('https://api.thedogapi.com/v1/breeds');
+    //   const allTempers = result.data.map(dog => {
+    //     if(dog.temperament){
+    //       dog.temperament.split(",").map(temp => {
+    //         Temper.create({name: temp})
+    //       })
+    //     }
+    //   })
+    // }
+    // getTemper()
+
+    console.log('%s listening at 3002'); // eslint-disable-line no-console
   });
 });

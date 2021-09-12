@@ -20,23 +20,30 @@
 const server = require('./src/app.js');
 const { conn } = require('./src/db');
 const axios = require('axios');
-const Temper = require('./src/models/Temper.js');
+const { Temper } = require('./src/db.js');
 
 // Syncing all the models at once.
 conn.sync({ force: false }).then(() => {
+  async function getTemper() {
+    let result = await axios.get('https://api.thedogapi.com/v1/breeds');
+    const allTempers = result.data.map(dog => {
+      if (dog.temperament) {
+        const dogMap = dog.temperament.split(", ")
+        let temperArr = []
+        dogMap.map(temp => {
+          if (!temperArr.includes(temp)) {
+            temperArr.push(temp)
+          }
+        })
+        temperArr.map(tempN => {
+          Temper.findOrCreate({ where: { name: tempN } })
+        })
+      }
+    })
+  }
+  getTemper()
 
   server.listen(3002, () => {
-    // async function getTemper() {
-    //   let result = await axios.get('https://api.thedogapi.com/v1/breeds');
-    //   const allTempers = result.data.map(dog => {
-    //     if(dog.temperament){
-    //       dog.temperament.split(",").map(temp => {
-    //         Temper.create({name: temp})
-    //       })
-    //     }
-    //   })
-    // }
-    // getTemper()
 
     console.log('%s listening at 3002'); // eslint-disable-line no-console
   });

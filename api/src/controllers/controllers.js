@@ -35,19 +35,19 @@ module.exports = {
 
   getTemper: async function () { //falta que se haga la llamada UNA SOLA VEZ a la api 
 
-    let result = await allData();
+    //   let result = await allData();
 
-    result.map(dog => {
-      if (dog.temperament) {
-        dog.temperament.split(",").map(temp => {
-          try {
-            Temper.create({ name: temp }) //(find or create)
-          } catch (error) {
-          }
-        })
-      }
-    })
-    
+    //   result.map(dog => {
+    //     if (dog.temperament) {
+    //       dog.temperament.split(",").map(temp => {
+    //         try {
+    //           Temper.create({ name: temp }) //(find or create)
+    //         } catch (error) {
+    //         }
+    //       })
+    //     }
+    //   })
+
     return await Temper.findAll()
   },
 
@@ -64,7 +64,7 @@ module.exports = {
         name: params.temperament
       })
 
-      await postDogBreed.addTempers([ ]); //no está mostrando strings, sino un array
+      await postDogBreed.addTempers(postDogTemp);
 
       return postDogBreed;
     } catch (error) {
@@ -73,6 +73,8 @@ module.exports = {
   }
 }
 
+
+//CREAR UTILS DESPUES
 async function getDataFromApi() {
   let result = await axios.get('https://api.thedogapi.com/v1/breeds')
 
@@ -101,7 +103,5 @@ async function findByName(name) {
   return dogsNames;
 
 }
-
-
 
 //TOLOWERCASE A TODO (CASE SENSITIVE)

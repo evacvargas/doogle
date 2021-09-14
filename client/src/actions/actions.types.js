@@ -1,7 +1,9 @@
 export const get_breeds = 'GET_BREEDS'; //
-export const get_detail_breed = 'GET_DETAIL_BREED'; //
-export const create_dog = 'CREATE_DOG'; //
 export const get_all_tempers = 'GET_ALL_TEMPERS';//
 export const filter_by_tempers = 'FILTER_BY_TEMPER'; //
-export const filter_by_breed = 'FILTER_BY_BREED';
-export const dogs_by_name = 'DOGS_BY_NAME';
+export const filter_by_breed_created = 'FILTER_BY_BREED_CREATED';
+export const create_dog = 'CREATE_DOG'; //
+export const get_detail_breed = 'GET_DETAIL_BREED'; //
+export const dogs_by_name = 'DOGS_BY_NAME'; //
+export const sort_by_weight = 'SORT_BY_WEIGHT';
+export const sort_by_breed = 'SORT_BY_BREED';

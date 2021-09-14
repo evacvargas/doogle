@@ -17,7 +17,7 @@ const Pages = styled.ul`
   }
 `;
 
-const CardsStyles = styled.div`
+const StyledLink = styled(Link)`
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -30,28 +30,29 @@ export default function Cards() {
   useEffect(() => {
     dispatch(getBreeds())
   }, [dispatch])
-console.log(allBreeds)
+
   const [currentPage, setCurrentPage] = useState(1);
   const [dogsPerPage, setDogsPerPage] = useState(8);
 
   const [pageNumLimit, setPageNumLimit] = useState(8);
-  const [maxLimit, setMaxLimit] = useState(20);
+  const [maxLimit, setMaxLimit] = useState(10);
   const [minLimit, setMinLimit] = useState(0);
-
-  const handleClick = (e) => {
-    setCurrentPage(Number(e.target.id))
-  }
-  const pages = [];
-  for (let index = 0; index <= Math.ceil(allBreeds?.length / dogsPerPage); index++) {
-    pages.push(index);
-  };
 
   const lastIndex = currentPage * dogsPerPage;
   const firstIndex = lastIndex - dogsPerPage;
   const currentDogs = allBreeds?.slice(firstIndex, lastIndex);
 
-  const paging = (pageNum) => {
-    setCurrentPage(pageNum)
+  const handleClick = (e) => {
+    setCurrentPage(Number(e.target.id))
+  }
+
+  // const paging = (pageNum) => {
+  //   setCurrentPage(pageNum)
+  // };
+
+  const pages = [];
+  for (let index = 0; index <= Math.ceil(allBreeds?.length / dogsPerPage); index++) {
+    pages.push(index);
   };
 
   const renderPagesNumbers = pages.map((num) => {
@@ -68,19 +69,17 @@ console.log(allBreeds)
   });
 
   return (
-    <>
-      <CardsStyles>
+    <div>
+      <StyledLink>
         {currentDogs?.map(function (dog) {
           return (
-            <Link to={'/breed/' + dog.id}>
-              <Card key={dog.id} dog={dog} />
-            </Link>
+            <Card key={dog.id} dog={dog} />
           );
         })}
-      </CardsStyles>
+      </StyledLink>
       <Pages>
         {renderPagesNumbers}
       </Pages>
-    </>
+    </div>
   )
 }

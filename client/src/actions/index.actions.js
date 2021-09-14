@@ -1,25 +1,27 @@
 import axios from 'axios';
-import { get_breeds, get_all_tempers, filter_by_tempers, get_detail_breed, dogs_by_name } from './actions.types';
+import { get_breeds, get_all_tempers, filter_by_tempers, filter_by_breed_created, get_detail_breed, dogs_by_name, sort_by_weight, sort_by_breed } from './actions.types';
 
 export const getBreeds = function (params) {
   return async function (dispatch) {
-    let result = await axios.get('http://localhost:3002/dogs');
-
-    return dispatch({
-      type: get_breeds,
-      payload: result.data
-    })
+    try {
+      let result = await axios.get('http://localhost:3002/dogs');
+      return dispatch({
+        type: get_breeds,
+        payload: result.data
+      })
+    } catch (error) { return error }
   }
 };
 
 export const getAllTempers = function (payload) {
   return async function (dispatch) {
-    let result = await axios.get('http://localhost:3002/temperament');
-
-    return dispatch({
-      type: get_all_tempers,
-      payload: result.data
-    })
+    try {
+      let result = await axios.get('http://localhost:3002/temperament');
+      return dispatch({
+        type: get_all_tempers,
+        payload: result.data
+      })
+    } catch (error) { return error }
   }
 }
 
@@ -30,12 +32,34 @@ export const filterByTempers = function (payload) {
   }
 }
 
-//filtrar por raza va aqui
+export const filterByBreedCreated = function (payload) {
+  return {
+    type: filter_by_breed_created,
+    payload
+  }
+}
+
+export const sortByWeight = function (payload) {
+  return {
+    type: sort_by_weight,
+    payload
+  }
+}
+
+export const sortByBreed = function (payload) {
+  return {
+    type: sort_by_breed,
+    payload
+  }
+}
 
 export const createBreed = function (payload) {
   return async function (dispatch) {
-    let result = await axios.post('http://localhost:3002/dog', payload)
-    return result;
+    payload.temperament = payload.temperament.toString()
+    try {
+      let result = await axios.post('http://localhost:3002/dog', payload)
+      return result;
+    } catch (error) { return error }
   }
 }
 
@@ -51,13 +75,13 @@ export const getDetailBreed = function (id) {
   }
 }
 
-export const getDogsByName = function (name) { //un filtrado mas
+export const getDogsByName = function (payload) { //un filtrado mas
   return async function (dispatch) {
     try {
-      let result = await axios.get('http://localhost:3002/dogs?name=' + name);
+      let result = await axios.get('http://localhost:3002/dogs?name=' + payload);
       return dispatch({
         type: dogs_by_name,
-        name: result.data
+        payload: result.data
       })
     } catch (error) { return error }
   }

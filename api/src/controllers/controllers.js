@@ -5,12 +5,11 @@ const { Op } = require('sequelize')
 module.exports = {
 
   getAllDogs: async function (params) {
-
-    let result = await allData();
     if (params.name) {
       let dogName = await findByName(params.name)
       return dogName;
     }
+    let result = await allData();
     return result;
   },
 
@@ -51,7 +50,8 @@ module.exports = {
     return await Temper.findAll()
   },
 
-  createDog: async function (params) { //ver como se envia desde el front, para enviar por body con un json. EVITAR NOMBRES CONTROVERSIALES
+  createDog: async function (params) {
+    console.log(params.body) //ver como se envia desde el front, para enviar por body con un json. EVITAR NOMBRES CONTROVERSIALES
     try {
       const postDogBreed = await Breed.create({
         name: params.name,
@@ -72,7 +72,6 @@ module.exports = {
     }
   }
 }
-
 
 //CREAR UTILS DESPUES
 async function getDataFromApi() {
@@ -95,11 +94,17 @@ async function allData() {
 
 async function findByName(name) {
 
-  const dogsNamesFromApi = await axios.get(`https://api.thedogapi.com/v1/breeds/search?name=${name}`)
+  const dogsNamesFromApi = await axios.get(`https://api.thedogapi.com/v1/breeds`)
 
+  const matchNames = dogsNamesFromApi.data.filter(dog => {
+    if (dog.name.toLowerCase() == name.toLowerCase()) {
+      return dog
+    }
+  })
+  console.log(matchNames)
   const dogsNamesFromDb = await Breed.findAll({ where: { name: { [Op.substring]: `${name}` } } }) //el operador substring trae todo lo que matchee con lo que me pasan por query params
 
-  const dogsNames = dogsNamesFromApi.data.concat(dogsNamesFromDb)
+  const dogsNames = matchNames.concat(dogsNamesFromDb)
   return dogsNames;
 
 }

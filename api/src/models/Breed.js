@@ -30,12 +30,11 @@ module.exports = (sequelize) => {
             allowNull: false
         },
 
-        // createInDb: { //me va a permitir diferenciar entre las razas traidas de la api y las creadas desde el form
-        //     type: DataTypes.BOOLEAN,
-        //     allowNull: false,
-        //     defaultValue: true
-        // }
-
+        create_in_db: { //me va a permitir diferenciar entre las razas traidas de la api y las creadas desde el form
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true
+        }
     });
 
 };

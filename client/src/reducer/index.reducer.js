@@ -36,19 +36,21 @@ export const reducer = function (state = initialState, action) {
       }
 
     case filter_by_breed_created:
-      let value = action.payload
-
+      let filterBreedCreated = []
       if (action.payload === 'created') {
-        value = 'string'
-      } else {
-        value = 'number'
+        filterBreedCreated = state.allBreeds.filter(el => {
+          if (el.create_in_db === true) {
+            return el;
+          }
+        })
       }
-      const filterBreedCreated = state.allBreeds.filter(el => {
-
-        if (typeof (el.id) === value) {
-          return el
-        }
-      })
+      if (action.payload === 'existing') {
+        filterBreedCreated = state.allBreeds.filter(el => {
+          if (!el.create_in_db) {
+            return el;
+          }
+        })
+      }
       return {
         ...state,
         breeds: filterBreedCreated

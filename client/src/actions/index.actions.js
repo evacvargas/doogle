@@ -55,7 +55,9 @@ export const sortByBreed = function (payload) {
 
 export const createBreed = function (payload) {
   return async function (dispatch) {
-    payload.temperament = payload.temperament.toString()
+    payload.weight = payload.minWeight + ' - ' + payload.maxWeight;
+    payload.height = payload.minHeight + ' - ' + payload.maxHeight;
+    
     try {
       let result = await axios.post('http://localhost:3002/dog', payload)
       return result;

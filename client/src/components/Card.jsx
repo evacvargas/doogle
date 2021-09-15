@@ -8,7 +8,7 @@ const CardStyle = styled(Link)`
     display: flex;
     flex-direction: column;
     width: calc(25% - 20px);
-    height: 450px;
+    height: 500px;
     border-radius: 20px;
     background-color: #4CA771;
     text-decoration: none;
@@ -41,11 +41,11 @@ const Info = styled.h3`
 export default function Card({ dog }) {
   return (
     <CardStyle to={'/breed/' + dog.id}>
-      <img src={dog?.image?.url} alt="" />
+      <img src={dog?.image?.url || "https://thumbs.dreamstime.com/b/group-twelve-dogs-24189584.jpg"} alt={dog.name} />
       <MiniCard>
         <Title>{dog.name}</Title>
         <Info>{dog.temperament}</Info>
-        <Info>{dog.weight.metric}kg</Info>
+        <Info>{dog.weight.metric || dog.weight}kg</Info>
       </MiniCard>
     </CardStyle>
   )

@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 const Pages = styled.ul`
   list-style: none;
   display: flex;
-
+  
   li{
     padding: 10px;
     border: 1px solid #b9c2ba;
@@ -26,7 +26,7 @@ const StyledLink = styled(Link)`
 export default function Cards() {
   const dispatch = useDispatch();
   const allBreeds = useSelector((state) => state.breeds);
-
+  console.log(allBreeds)
   useEffect(() => {
     dispatch(getBreeds())
   }, [dispatch])
@@ -34,8 +34,8 @@ export default function Cards() {
   const [currentPage, setCurrentPage] = useState(1);
   const [dogsPerPage, setDogsPerPage] = useState(8);
 
-  const [pageNumLimit, setPageNumLimit] = useState(8);
-  const [maxLimit, setMaxLimit] = useState(10);
+  const [pageNumLimit, setPageNumLimit] = useState(3);
+  const [maxLimit, setMaxLimit] = useState(3);
   const [minLimit, setMinLimit] = useState(0);
 
   const lastIndex = currentPage * dogsPerPage;
@@ -44,18 +44,41 @@ export default function Cards() {
 
   const handleClick = (e) => {
     setCurrentPage(Number(e.target.id))
+    setPageNumLimit(3)
   }
 
-  // const paging = (pageNum) => {
-  //   setCurrentPage(pageNum)
-  // };
+  const handlerPrevBtn = () => {
+    setCurrentPage(currentPage - 1)
+    if ((currentPage - 1) % pageNumLimit === 0) {
+      setMaxLimit(maxLimit - pageNumLimit)
+      setMinLimit(minLimit - pageNumLimit)
+    }
+  }
+
+  const handlerNextBtn = () => {
+    setCurrentPage(currentPage + 1)
+    if (currentPage + 1 > maxLimit) {
+      setMaxLimit(maxLimit + pageNumLimit)
+      setMinLimit(minLimit + pageNumLimit)
+    }
+  }
 
   const pages = [];
   for (let index = 0; index <= Math.ceil(allBreeds?.length / dogsPerPage); index++) {
     pages.push(index);
   };
 
-  const renderPagesNumbers = pages.map((num) => {
+  let nextPages = null;
+  if (pages.length > minLimit) {
+    nextPages = <li onClick={handlerNextBtn}>  &hellip; </li>
+  }
+
+  let prevPages = null;
+  if (pages.length > maxLimit) {
+    prevPages = <li onClick={handlerPrevBtn}>  &hellip; </li>
+  }
+
+  const renderPagesNumbers = pages?.map((num) => {
     if (num < maxLimit + 1 && num > minLimit) {
       return (
         <li
@@ -78,7 +101,11 @@ export default function Cards() {
         })}
       </StyledLink>
       <Pages>
+        <li> <button onClick={handlerPrevBtn}> Prev </button></li>
+        {prevPages}
         {renderPagesNumbers}
+        {nextPages}
+        <li> <button onClick={handlerNextBtn}> Next </button> </li>
       </Pages>
     </div>
   )

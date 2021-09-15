@@ -24,7 +24,7 @@ const { Temper } = require('./src/db.js');
 
 // Syncing all the models at once.
 conn.sync({ force: false }).then(() => {
-  async function getTemper() {
+  async function getTempersFromApi() {
     let result = await axios.get('https://api.thedogapi.com/v1/breeds');
     const allTempers = result.data.map(dog => {
       if (dog.temperament) {
@@ -41,7 +41,7 @@ conn.sync({ force: false }).then(() => {
       }
     })
   }
-  getTemper()
+  getTempersFromApi()
 
   server.listen(3002, () => {
 

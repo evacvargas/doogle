@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { getDogsByName } from '../actions/index.actions';
+import styled from 'styled-components';
 
 
 const SearchB = styled.div`

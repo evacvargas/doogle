@@ -32,26 +32,14 @@ module.exports = {
     }
   },
 
-  getTemper: async function () { //falta que se haga la llamada UNA SOLA VEZ a la api 
-
-    //   let result = await allData();
-
-    //   result.map(dog => {
-    //     if (dog.temperament) {
-    //       dog.temperament.split(",").map(temp => {
-    //         try {
-    //           Temper.create({ name: temp }) //(find or create)
-    //         } catch (error) {
-    //         }
-    //       })
-    //     }
-    //   })
-
+  getTemper: async function () {
     return await Temper.findAll()
   },
 
   createDog: async function (params) {
-    console.log(params.body) //ver como se envia desde el front, para enviar por body con un json. EVITAR NOMBRES CONTROVERSIALES
+    if (!params.name || !params.height || !params.weight) {
+      return { message: 'Wrong field' }
+    }
     try {
       const postDogBreed = await Breed.create({
         name: params.name,
@@ -60,20 +48,16 @@ module.exports = {
         life_span: params.life_span
       })
 
-      const postDogTemp = await Temper.create({
-        name: params.temperament
-      })
+      const temperamentsDog = await postDogBreed.addTemper(params.temperament); //arreglo de obj de temperamentos
 
-      await postDogBreed.addTempers(postDogTemp);
-
-      return postDogBreed;
+      return temperamentsDog;
     } catch (error) {
       return error.message;
     }
   }
 }
 
-//CREAR UTILS DESPUES
+
 async function getDataFromApi() {
   let result = await axios.get('https://api.thedogapi.com/v1/breeds')
 
@@ -97,16 +81,29 @@ async function findByName(name) {
   const dogsNamesFromApi = await axios.get(`https://api.thedogapi.com/v1/breeds`)
 
   const matchNames = dogsNamesFromApi.data.filter(dog => {
-    if (dog.name.toLowerCase() == name.toLowerCase()) {
+    if (dog.name.toLowerCase().includes(name.toLowerCase())) {
       return dog
     }
   })
-  console.log(matchNames)
-  const dogsNamesFromDb = await Breed.findAll({ where: { name: { [Op.substring]: `${name}` } } }) //el operador substring trae todo lo que matchee con lo que me pasan por query params
+  const dogsNamesFromDb = await Breed.findAll({ where: { name: { [Op.like]: `${name}` } }, include: Temper })
+  const dogs = dogsNamesFromDb.map(dog => {
+    const temps = dog.dataValues.tempers.map(temp => { return temp.name })
+    return {
+      create_in_db: dog.dataValues.create_in_db,
+      createdAt: dog.dataValues.createdAt,
+      height: dog.dataValues.height,
+      id: dog.dataValues.id,
+      life_span: dog.dataValues.life_span,
+      name: dog.dataValues.name,
+      temperament: temps.toString(),
+      updatedAt: dog.dataValues.updatedAt,
+      weight: dog.dataValues.weight,
+    }
+  })
 
-  const dogsNames = matchNames.concat(dogsNamesFromDb)
+  const dogsNames = matchNames.concat(dogs)
   return dogsNames;
 
 }
 
-//TOLOWERCASE A TODO (CASE SENSITIVE)
+

@@ -15,7 +15,7 @@ const CardStyle = styled(Link)`
 
     img {
       border-radius: 20px;
-      height: 200px;
+      height: 300px;
       object-fit: cover;
     }
 `;
@@ -45,7 +45,7 @@ export default function Card({ dog }) {
       <MiniCard>
         <Title>{dog.name}</Title>
         <Info>{dog.temperament}</Info>
-        <Info>{dog.weight.metric || dog.weight}kg</Info>
+        <Info>{dog.weight.metric || dog.weight} kg</Info>
       </MiniCard>
     </CardStyle>
   )

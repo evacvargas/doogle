@@ -3,39 +3,48 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getBreeds } from "../actions/index.actions";
 import styled from "styled-components";
 import Card from "./Card";
-import { Link } from "react-router-dom";
 
 
 const Pages = styled.ul`
   list-style: none;
   display: flex;
+  justify-content: center;
+  text-decoration: none;
+  align-items: center;
+  color: #4ca771;
+  background-color: white;
+  padding-left: 0;  
   
   li{
     padding: 10px;
     border: 1px solid #b9c2ba;
+    border-radius: 8px;
     cursor: pointer;
+    margin: 5px;
   }
+
 `;
 
-const StyledLink = styled(Link)`
+const CardWraper = styled.div`
     display: flex;
     align-items: center;
     flex-wrap: wrap;
 `;
 
+
 export default function Cards() {
   const dispatch = useDispatch();
   const allBreeds = useSelector((state) => state.breeds);
-  console.log(allBreeds)
+
   useEffect(() => {
     dispatch(getBreeds())
   }, [dispatch])
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [dogsPerPage, setDogsPerPage] = useState(8);
+  const [dogsPerPage] = useState(8);
 
-  const [pageNumLimit, setPageNumLimit] = useState(3);
-  const [maxLimit, setMaxLimit] = useState(3);
+  const [pageNumLimit, setPageNumLimit] = useState(5);
+  const [maxLimit, setMaxLimit] = useState(5);
   const [minLimit, setMinLimit] = useState(0);
 
   const lastIndex = currentPage * dogsPerPage;
@@ -44,7 +53,7 @@ export default function Cards() {
 
   const handleClick = (e) => {
     setCurrentPage(Number(e.target.id))
-    setPageNumLimit(3)
+    setPageNumLimit(5)
   }
 
   const handlerPrevBtn = () => {
@@ -68,16 +77,6 @@ export default function Cards() {
     pages.push(index);
   };
 
-  let nextPages = null;
-  if (pages.length > minLimit) {
-    nextPages = <li onClick={handlerNextBtn}>  &hellip; </li>
-  }
-
-  let prevPages = null;
-  if (pages.length > maxLimit) {
-    prevPages = <li onClick={handlerPrevBtn}>  &hellip; </li>
-  }
-
   const renderPagesNumbers = pages?.map((num) => {
     if (num < maxLimit + 1 && num > minLimit) {
       return (
@@ -93,19 +92,17 @@ export default function Cards() {
 
   return (
     <div>
-      <StyledLink>
+      <CardWraper>
         {currentDogs?.map(function (dog) {
           return (
             <Card key={dog.id} dog={dog} />
           );
         })}
-      </StyledLink>
+      </CardWraper>
       <Pages>
-        <li> <button onClick={handlerPrevBtn}> Prev </button></li>
-        {prevPages}
+        <li> <button onClick={handlerPrevBtn} disabled={currentPage < 2 ? true : false}> Prev </button></li>
         {renderPagesNumbers}
-        {nextPages}
-        <li> <button onClick={handlerNextBtn}> Next </button> </li>
+        <li> <button onClick={handlerNextBtn} disabled={currentPage === pages.length - 1 ? true : false}> Next </button> </li>
       </Pages>
     </div>
   )

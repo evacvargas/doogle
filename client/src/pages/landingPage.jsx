@@ -9,22 +9,24 @@ const Wrapper = styled.div`
     background-repeat: no-repeat;
     background-size: cover;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    text-decoration: none;
+    justify-content: center;
 `;
 
-const Button = styled.div`
+const Button = styled(Link)`
     background-color: #4ca771;
     padding: 24px 36px;
     color: white;
     border-radius: 10px;
     font-size: 50px;
     margin: 50px;
+    text-decoration: none;
 `;
 
 const Title = styled.h1`
     color: white; 
+    font-size: 60px;
 `;
 
 export default function LandingPage() {
@@ -32,9 +34,7 @@ export default function LandingPage() {
     <div>
       <Wrapper>
         <Title> WELCOME TO DOOGLE </Title>
-        <Link to='/home'>
-          <Button> INGRESAR </Button>
-        </Link>
+        <Button to='/home'> INGRESAR </Button>
       </Wrapper >
     </div>
   )

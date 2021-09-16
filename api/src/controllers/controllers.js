@@ -9,13 +9,15 @@ module.exports = {
       let dogName = await findByName(params.name)
       return dogName;
     }
+
     let result = await allData();
+
     return result;
   },
 
   getBreed: async function (params) {
 
-    let result = await getDataFromApi(); //probar si se coloca dentro del if
+    let result = await getDataFromApi();
 
     if (params.dogId.length < 5) {
       const dogBreed = result.data.filter(element => {
@@ -65,8 +67,22 @@ async function getDataFromApi() {
 }
 
 async function getDataFromDb() {
-  let db = await Breed.findAll({ include: Temper });
-  return db;
+  let dogsFromDb = await Breed.findAll({ include: Temper });
+  const dogs = dogsFromDb.map(dog => {
+    const temps = dog.dataValues.tempers.map(temp => { return temp.name })
+    return {
+      create_in_db: dog.dataValues.create_in_db,
+      createdAt: dog.dataValues.createdAt,
+      height: dog.dataValues.height,
+      id: dog.dataValues.id,
+      life_span: dog.dataValues.life_span,
+      name: dog.dataValues.name,
+      temperament: temps.toString(),
+      updatedAt: dog.dataValues.updatedAt,
+      weight: dog.dataValues.weight,
+    }
+  })
+  return dogs;
 }
 
 async function allData() {
@@ -85,9 +101,10 @@ async function findByName(name) {
       return dog
     }
   })
-  const dogsNamesFromDb = await Breed.findAll({ where: { name: { [Op.like]: `${name}` } }, include: Temper })
+  const dogsNamesFromDb = await Breed.findAll({ where: { name: { [Op.substring]: `${name}` } }, include: Temper })
+
   const dogs = dogsNamesFromDb.map(dog => {
-    const temps = dog.dataValues.tempers.map(temp => { return temp.name })
+    const temps = dog.dataValues.tempers.map(temp => { return temp.name }) //crear un array de string a partir del obj de la db
     return {
       create_in_db: dog.dataValues.create_in_db,
       createdAt: dog.dataValues.createdAt,
